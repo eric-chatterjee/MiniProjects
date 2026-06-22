@@ -59,4 +59,4 @@ qc = QuantumCircuit(n+d)
 
 <img width="105" height="27" alt="StateAfterInitializedCircuit" src="https://github.com/user-attachments/assets/bad5b488-1cc4-4045-afa1-2d7810495e62" />
 
-We apply the Hadamard gate on all bits, yielding the superposition $\frac{1}{\sqrt{2^{n+d}}} \sum_{t',x'} |2^d*t'> |x'>$, where the $t'$ values represent all possible "phase slots" (i.e., all values in the range $2^{-d} \times 0,1,2,...,2^d-1$).
+We apply the Hadamard gate on all bits, yielding the superposition $\frac{1}{\sqrt{2^{n+d}}} \sum_{t',x'} |2^d*t'> |x'>$, where the $t'$ values represent all possible "phase slots" (i.e., all values in the range $2^{-d} \times \textrm{(}0,1,2,...,2^d-1$)).
