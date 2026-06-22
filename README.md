@@ -91,3 +91,9 @@ qc.append(iqft,range(n,n+d))
 ```
 
 <img width="79" height="563" alt="AfterIQFTCircuit" src="https://github.com/user-attachments/assets/6f15f600-f7e9-41fb-b94d-581b25dec80d" />
+
+$\frac{1}{4}\ket{000010}\ket{0101} + \frac{1}{4}\ket{000101}\ket{0001} + \frac{1}{4}\ket{000111}\ket{0010} + \frac{1}{4}\ket{001010}\ket{0000} + \frac{1}{4}\ket{010001}\ket{1100} + \frac{1}{4}\ket{010100}\ket{1000} + ... + \frac{1}{4}\ket{101111}\ket{0011} + \frac{1}{4}\ket{110100}\ket{1111} + \frac{1}{4}\ket{110111}\ket{0110} + \frac{1}{4}\ket{111101}\ket{1010} + \frac{1}{4}\ket{111110}\ket{0100}$
+
+Note the coefficient amplitude has changed from $1/\sqrt{2^{n+d}}$ to $1/\sqrt{2^n}$. This corresponds to the fact that for each $\ket{x'}$, the $\ket{t'}$ superposition collapsed to the well-defined state $\ket{t(x')}$.
+
+## Grover's Algorithm: Distilling the Value of x
