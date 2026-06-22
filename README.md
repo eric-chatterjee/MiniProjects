@@ -98,15 +98,15 @@ Note the coefficient amplitude has changed from $1/\sqrt{2^{n+d}}$ to $1/\sqrt{2
 
 ## Grover's Algorithm: Distilling the Value of x
 
-Next, we seek to use Grover's algorithm to distill this superposition down to the desired value of $x'$ (i.e., $x' = x$). Conveniently, the $x$ is fully marked by the corresponding given phase $t(x)$ in the current entangled state. The key is thus to define an oracle operator that targets the $d$-bit state $\ket{2^d t(x)}$. This can be accomplished by using a series of X gates to turn all $d$ dits in that state into a string of 1s and then applying a multi-controlled Z gate using $d-1$ bits as controls and the leftover bit as the target. This will flip the phase of $\ket{2^d t(x)}$, while leaving all other $d$-bit states \ket{2^d t(x')} in the entangled superposition untouched. 
+Next, we seek to use Grover's algorithm to distill this superposition down to the desired value of $x'$ (i.e., $x' = x$). Conveniently, the $x$ is fully marked by the corresponding given phase $t(x)$ in the current entangled state. The key is thus to define an oracle operator that targets the $d$-bit state $\ket{2^d t(x)}$. This can be accomplished by using a series of $X$ gates to turn all $d$ dits in that state into a string of 1s and then applying a multi-controlled $Z$ gate using $d-1$ bits as controls and the leftover bit as the target. This will flip the phase of $\ket{2^d t(x)}$, while leaving all other $d$-bit states \ket{2^d t(x')} in the entangled superposition untouched. 
 
-The X-gate series can be practically implemented for a given value of $2^d t(x)$, which we label as "tvalueexpanded" as follows. For our example, we will pick $2^d t(x) = 25$, corresponding to $x = 11$ (see "tarray" above).
+The $X$-gate series can be practically implemented for a given value of $2^d t(x)$, which we label as "tvalueexpanded" as follows. For our example, we will pick $2^d t(x) = 25$, corresponding to $x = 11$ (see "tarray" above).
 
 ```python
 tvalueexpanded = 25 # represents 2^d*t(x)
 ```
 
-We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue on to the next bit with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the X gate to flip it to 1, along with reverting the numhold value to the original. We apply the same protocol to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
+We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue on to the next bit with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the $X$ gate to flip it to 1, along with reverting the numhold value to the original. We apply the same protocol to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
 
 ```python
 numhold = tvalueexpanded
@@ -124,9 +124,9 @@ for dindexreversed in range(d):
 
 $\frac{1}{4}\ket{000000}\ket{1001} + \frac{1}{4}\ket{000010}\ket{1110} + \frac{1}{4}\ket{000100}\ket{0111} + \frac{1}{4}\ket{001001}\ket{0011} + \frac{1}{4}\ket{001010}\ket{1101} + \frac{1}{4}\ket{010001}\ket{0110} + ... + \frac{1}{4}\ket{100100}\ket{0101} + \frac{1}{4}\ket{101100}\ket{0000} + \frac{1}{4}\ket{110010}\ket{1000} + \frac{1}{4}\ket{110111}\ket{1100} + \frac{1}{4}\ket{111111}\ket{1011}$
 
-As the diagram shows, the X gates were applied to the 1st, 2nd, and 5th bits of the $d$-bit string (where we define the string indices as ranging from 0 through 5). This comports with the positions of the 0s in the binary string for $t(x) = 25$ (i.e., $\ket{011001}$), which we have now converted to $\ket{111111}$. Consequently, we can see from the last state in the new superposition that the $d$-bit state consisting of all 1s is now entangled with the $x = 11$ (i.e., $\ket{1011}$). 
+As the diagram shows, the $X$ gates were applied to the 1st, 2nd, and 5th bits of the $d$-bit string (where we define the string indices as ranging from 0 through 5). This comports with the positions of the 0s in the binary string for $t(x) = 25$ (i.e., $\ket{011001}$), which we have now converted to $\ket{111111}$. Consequently, we can see from the last state in the new superposition that the $d$-bit state consisting of all 1s is now entangled with the $x = 11$ (i.e., $\ket{1011}$). 
 
-We now construct the oracle operator using the multi-controlled Z gate on the $d$-bit string, as mentioned above. To do so, we use the general MCPhase gate with the phase set to $\pi$.
+We now construct the oracle operator using the multi-controlled $Z$ gate on the $d$-bit string, as mentioned above. To do so, we use the general MCPhase gate with the phase set to $\pi$.
 
 ```python
 from qiskit.circuit.library import PhaseGate
@@ -143,4 +143,28 @@ As desired, the phase associated with the last state in this superposition (i.e.
 
 We now construct the diffusion operator. To do so, we apply the composite operator $A (2\ket{0...0}\bra{0...0} - I) A^†$, where $A$ is the entire set of operations that we used to go from the $(n+d)$-bit vacuum state $\ket{0...0}$ to the entangled superposition upon which we applied the oracle operator.
 
-The operator $2\ket{0...0}\bra{0...0} - I$ is in turn equivalent (up to a global sign flip) to applying the X gate on all bits, then applying an MCZ gate using $n+d-1$ bits as controls and the remaining bit as target (thus flipping the phase corresponding to the state $\ket{1...1}$), and finally reverting the basis states back by applying the X gate on all bits again. The overall effect is to flip the phase of the $\ket{0...0}$ basis state in a given superposition while leaving the coefficients for all other basis states unchanged. For this, we define the necessary MCZ gate as follows:
+The operator $2\ket{0...0}\bra{0...0} - I$ is in turn equivalent (up to a global sign flip) to applying the $X$ gate on all bits, then applying an $MCZ$ gate using $n+d-1$ bits as controls and the remaining bit as target (thus flipping the phase corresponding to the state $\ket{1...1}$), and finally reverting the basis states back by applying the $X$ gate on all bits again. The overall effect is to flip the phase of the $\ket{0...0}$ basis state in a given superposition while leaving the coefficients for all other basis states unchanged. For this, we define the necessary $MCZ$ gate as follows:
+
+```python
+czgate2 = zgate.control(n+d-1)
+```
+
+We thus break the diffusion operator into individual steps, starting with $A^†$:
+
+```python
+numhold = tvalueexpanded
+for dindexreversed in range(d):
+    dindex = d - dindexreversed - 1
+    twoexpdindex = 2**dindex
+    numhold = numhold - twoexpdindex
+    if numhold < 0:
+        qc.x(n+dindex)
+        numhold = numhold + twoexpdindex
+qc.append(iqft.inverse(),range(n,n+d))
+for dindexreversed in range(d):
+    dindex = d - dindexreversed - 1
+    ugateinvraised = ugateinv**(2**dindex)
+    cugateinvraised = ugateinvraised.control(1)
+    qc.append(cugateinvraised,[n+dindex] + list(range(n)))
+qc.h(range(n+d))
+```
