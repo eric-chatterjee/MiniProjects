@@ -49,7 +49,7 @@ Note that we have defined $U^{-1}$ using the name "Uinv". We will use this later
 
 ## Quantum Phase Estimation: Preparing the Entangled State
 
-We now consider the quantum circuit itself. We initialize $n+d$ bits (where we aim to use the first $n$ bits and the next $d$ bits to represent $x'$ and $2^d t(x')$, respectively).
+We now consider the quantum circuit itself. We initialize $n+d$ bits (where we aim to use the first $n$ bits and the next $d$ bits to represent $x'$ and $2^d t(x')$, respectively, defining the ascending order as leftward).
 
 ```python
 qc = QuantumCircuit(n+d)
@@ -69,7 +69,7 @@ qc.h(range(n+d))
 
 $\frac{1}{32}\ket{000000}\ket{0000} + \frac{1}{32}\ket{000000}\ket{0001} + \frac{1}{32}\ket{000000}\ket{0010} + \frac{1}{32}\ket{000000}\ket{0011} + \frac{1}{32}\ket{000000}\ket{0100} + \frac{1}{32}\ket{000000}\ket{0101} + ... + \frac{1}{32}\ket{111111}\ket{1011} + \frac{1}{32}\ket{111111}\ket{1100} + \frac{1}{32}\ket{111111}\ket{1101} + \frac{1}{32}\ket{111111}\ket{1110} + \frac{1}{32}\ket{111111}\ket{1111}$
 
-Therefore, for each $\ket{x'}$, this state features a superposition of all numerically possible phases. However, the goal is to create an entangled state where each $\ket{x'}$ is only associated with the corresponding phase $\ket{t(x')}$. To achieve this, we apply the quantum phase estimation method. Specifically, we want to map $\ket{2^d t'}\ket{x'} \rightarrow e^{i 2\pi t(x') (2^d t')} \ket{2^d t'}\ket{x'}$, which is achieved by applying the operator $U^{2^d t'} = \prod_{l=0}^{d-1} C_{n+l} U^{2^l}$, where we apply the operator on the first $n$ bits while using the next $d$ bits individually as control qubits.
+Therefore, for each $\ket{x'}$, this state features a superposition of all numerically possible phases. However, the goal is to create an entangled state where each $\ket{x'}$ is only associated with the corresponding phase $\ket{t(x')}$. To achieve this, we apply the quantum phase estimation method. Specifically, we want to map $\ket{2^d t'}\ket{x'} \rightarrow e^{i 2\pi t(x') (2^d t')} \ket{2^d t'}\ket{x'}$, which is achieved by applying the operator $U^{2^d t'} = \prod_{l=0}^{d-1} C_{n+l} U^{2^l}$, where we apply the operator on the first $n$ bits while using the next $d$ bits individually as control qubits (defining the ascending order as leftward).
 
 ```python
 for dindex in range(d):
@@ -106,7 +106,7 @@ The $X$-gate series can be practically implemented for a given value of $2^d t(x
 tvalueexpanded = 25
 ```
 
-We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue on to the next bit with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the $X$ gate to flip it to 1, along with reverting the numhold value to the original. We apply the same protocol to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
+We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the $X$ gate to flip it to 1, along with reverting the numhold value to the original. Using the updated value of numhold, we apply this protocol recursively to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
 
 ```python
 numhold = tvalueexpanded
