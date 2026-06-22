@@ -8,7 +8,11 @@ import numpy as np
 import matplotlib as mpl
 ```
 
+## Goal Statement
+
 We are given a set of states $|x> \in {|0>,|1>,...|2^n - 1>}$, where each state is an eigenstate of the operator $U$, with the eigenvalue being a unique phase $e^{i 2\pi \theta(x)} = e^{i 2\pi t(x)}$, where $t(x) \in [0,1)$ and $2^d \theta(x)$ is an integer (for a particular positive integer $d$) for any x. The goal is to find the state $\ket{x} = \ket{x_0}$, given $t(x_0)$.
+
+## Establishing Inputs
 
 For our example, we use $n = 4$ (corresponding to 16 possible basis states $\ket{x}$).
 
@@ -39,4 +43,14 @@ ugate = DiagonalGate(phasearray)
 ugate.name = "U"
 ugateinv = ugate.inverse()
 ugateinv.name = "Uinv"
+```
+
+Note that we have defined $U^{-1}$ using the name "Uinv". We will use this later when establishing the diffusion operator for Grover's Algorithm.
+
+## Quantum Phase Estimation: Preparing the Entangled State
+
+We now consider the quantum circuit itself. We initialize $n+d$ bits (where we aim to use the first $n$ bits and the next $d$ bits to represent $x$ and $2^d t(x)$, respectively).
+
+```python
+qc = QuantumCircuit(n+d)
 ```
