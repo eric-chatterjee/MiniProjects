@@ -169,7 +169,7 @@ for dindexreversed in range(d):
 qc.h(range(n+d))
 ```
 
-Next, we apply I - 2|0...0><0...0| using the protocol laid out above:
+Next, we apply $I - 2\ket{0...0}\bra{0...0}$ using the protocol laid out above:
 
 ```python
 qc.x(range(n+d))
@@ -200,13 +200,13 @@ for dindexreversed in range(d):
 
 $-\frac{3}{16}\ket{000000}\ket{1001} - \frac{3}{16}\ket{000010}\ket{1110} - \frac{3}{16}\ket{000100}\ket{0111} - \frac{3}{16}\ket{001001}\ket{0011} - \frac{3}{16}\ket{001010}\ket{1101} - \frac{3}{16}\ket{010001}\ket{0110} - ... - \frac{3}{16}\ket{100100}\ket{0101} - \frac{3}{16}\ket{101100}\ket{0000} - \frac{3}{16}\ket{110010}\ket{1000} - \frac{3}{16}\ket{110111}\ket{1100} - \frac{11}{16}\ket{111111}\ket{1011}$
 
-In the above diagram, Uinv represents the inverse of U. As the state coefficients show, the state corresponding to $x = 11$ has been dramatically amplified in the composite superposition. We run the oracle-diffusion cycles for the total number of $2\phi$ rotations (where $\phi = arcsin(1/\sqrt{2^n}) \sim 1/\sqrt{2^n}$) required to get the phase angle as close to $\pi/2$ as possible. This is defined by "numgrovercycles" below:
+In the above diagram, Uinv represents the inverse of U. As the state coefficients show, the state corresponding to $x = 11$ has been dramatically amplified in the composite superposition. We run the oracle-diffusion cycles for the total number of $2\phi$ rotations (where $\phi = \textrm{sin}^{-1}(1/\sqrt{2^n}) \sim 1/\sqrt{2^n}$) required to get the phase angle as close to $\pi/2$ as possible. This is defined by "numgrovercycles" below:
 
 ```python
-numgrovercycles = round(np.pi/(4*np.arctan(1/2**(n/2))) - 1/2)
+numgrovercycles = round(np.pi/(4*np.arcsin(1/2**(n/2))) - 1/2)
 ```
 
-Since we have already completed 1 cycle above, we run another numgrovercycles-1 cycles using a for loop:
+For our case, this amounts to 3 total cycles. Since we have already completed 1 cycle above, we run another numgrovercycles-1 cycles (2 in our example) using a for loop:
 
 ```python
 for cycle in range(1,numgrovercycles):
@@ -252,3 +252,5 @@ for cycle in range(1,numgrovercycles):
 $0.05078125\ket{000000}\ket{1001} + 0.05078125\ket{000010}\ket{1110} + 0.05078125\ket{000100}\ket{0111} + 0.05078125\ket{001001}\ket{0011} + 0.05078125\ket{001010}\ket{1101} + 0.05078125\ket{010001}\ket{0110} + ... + 0.05078125\ket{100100}\ket{0101} + 0.05078125\ket{101100}\ket{0000} + 0.05078125\ket{110010}\ket{1000} + 0.05078125\ket{110111}\ket{1100} + 0.98046875\ket{111111}\ket{1011}$
 
 We finish by measuring the rightmost $n$ bits (in our example, 4 bits). There is a 96% probability that we will get the correct answer $\ket{1011}$, i.e., $x = 11$.
+
+More generally, we note that since each Grover cycle rotates the composite state by $2\phi$, the optimal number of cycles will yield a state with a maximum separation of $\phi$ from the ideal angle $\pi/2$. Since $\phi = \textrm{sin}^{-1}(1/\sqrt{2^n})$, this means that in the final superposition, the overall amplitude of the "wrong" states is no more than $1/sqrt{2^n}$, resulting in an error probability of no more than $1/2^n$ (i.e., the measurement error is $0\bigg(\frac{1}{2^n}\bigg)$, as desired).
