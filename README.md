@@ -97,3 +97,25 @@ $\frac{1}{4}\ket{000010}\ket{0101} + \frac{1}{4}\ket{000101}\ket{0001} + \frac{1
 Note the coefficient amplitude has changed from $1/\sqrt{2^{n+d}}$ to $1/\sqrt{2^n}$. This corresponds to the fact that for each $\ket{x'}$, the $\ket{t'}$ superposition collapsed to the well-defined state $\ket{t(x')}$.
 
 ## Grover's Algorithm: Distilling the Value of x
+
+Next, we seek to use Grover's algorithm to distill this superposition down to the desired value of $x'$ (i.e., $x' = x$). Conveniently, the $x$ is fully marked by the corresponding given phase $t(x)$ in the current entangled state. The key is thus to define an oracle operator that targets the $d$-bit state $\ket{2^d t(x)}$. This can be accomplished by using a series of X gates to turn all $d$ dits in that state into a string of 1s and then applying a multi-controlled Z gate using $d-1$ bits as controls and the leftover bit as the target. This will flip the phase of $\ket{2^d t(x)}$, while leaving all other $d$-bit states \ket{2^d t(x')} in the entangled superposition untouched. 
+
+The X-gate series can be practically implemented for a given value of $2^d t(x)$, which we label as "tvalueexpanded" as follows. For our example, we will pick $2^d t(x) = 25$, corresponding to $x = 11$ (see "tarray" above).
+
+```python
+tvalueexpanded = 25 # represents 2^d*t(x)
+```
+
+We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue on to the next bit with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the X gate to flip it to 1, along with reverting the numhold value to the original. We apply the same protocol to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
+
+```python
+numhold = tvalueexpanded
+
+for dindexreversed in range(d):
+    dindex = d - dindexreversed - 1
+    twoexpdindex = 2**dindex
+    numhold = numhold - twoexpdindex
+    if numhold < 0:
+        qc.x(n+dindex)
+        numhold = numhold + twoexpdindex
+```
