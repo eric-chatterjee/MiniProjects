@@ -249,7 +249,7 @@ for cycle in range(1,numgrovercycles):
             numhold = numhold + twoexpdindex
 ```
 
-$0.05078125\ket{000000}\ket{1001} + 0.05078125\ket{000010}\ket{1110} + 0.05078125\ket{000100}\ket{0111} + 0.05078125\ket{001001}\ket{0011} + 0.05078125\ket{001010}\ket{1101} + 0.05078125\ket{010001}\ket{0110} + ... + 0.05078125\ket{100100}\ket{0101} + 0.05078125\ket{101100}\ket{0000} + 0.05078125\ket{110010}\ket{1000} + 0.05078125\ket{110111}\ket{1100} + 0.98046875\ket{111111}\ket{1011}$
+$0.05078125\ket{000000}\ket{1001} + 0.05078125\ket{000010}\ket{1110} + 0.05078125\ket{000100}\ket{0111} + 0.05078125\ket{001001}\ket{0011} + 0.05078125\ket{001010}\ket{1101} + 0.05078125\ket{010001}\ket{0110} + ... + 0.05078125\ket{100100}\ket{0101} + 0.05078125\ket{101100}\ket{0000} + 0.05078125\ket{110010}\ket{1000} + 0.05078125\ket{110111}\ket{1100} - 0.98046875\ket{111111}\ket{1011}$
 
 We finish by measuring the rightmost $n$ bits (in our example, 4 bits). There is a 96% probability that we will get the correct answer $\ket{1011}$, i.e., $x = 11$.
 
