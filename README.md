@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib as mpl
 ```
 
-## Goal Statement
+## Objective Statement
 
 We are given a set of states $|x'> \in {|0>,|1>,...|2^n - 1>}$, where each state is an eigenstate of the operator $U$, with the eigenvalue being a unique phase $e^{i 2\pi \theta(x')} = e^{i 2\pi t(x')}$, where $t(x') \in [0,1)$ and $2^d \theta(x')$ is an integer (for a particular positive integer $d$) for any x'. The goal is to find the state $\ket{x'} = \ket{x}$, given $t(x)$.
 
@@ -98,7 +98,7 @@ Note the coefficient amplitude has changed from $1/\sqrt{2^{n+d}}$ to $1/\sqrt{2
 
 ## Grover's Algorithm: Distilling the Value of x
 
-Next, we seek to use Grover's algorithm to distill this superposition down to the desired value of $x'$ (i.e., $x' = x$). Conveniently, the $x$ is fully marked by the corresponding given phase $t(x)$ in the current entangled state. The key is thus to define an oracle operator that targets the $d$-bit state $\ket{2^d t(x)}$. This can be accomplished by using a series of $X$ gates to turn all $d$ dits in that state into a string of 1s and then applying a multi-controlled $Z$ gate using $d-1$ bits as controls and the leftover bit as the target. This will flip the phase of $\ket{2^d t(x)}$, while leaving all other $d$-bit states \ket{2^d t(x')} in the entangled superposition untouched. 
+Next, we seek to use Grover's algorithm to distill this superposition down to the desired value of $x'$ (i.e., $x' = x$). Conveniently, the $x$ is fully marked by the corresponding given phase $t(x)$ in the current entangled state. The key is thus to define an oracle operator that targets the $d$-bit state $\ket{2^d t(x)}$. This can be accomplished by using a series of $X$ gates to turn all $d$ dits in that state into a string of 1s and then applying a multi-controlled $Z$ gate using $d-1$ bits as controls and the leftover bit as the target. This will flip the phase of $\ket{2^d t(x)}$, while leaving all other $d$-bit states $\ket{2^d t(x')}$ in the entangled superposition untouched. 
 
 The $X$-gate series can be practically implemented for a given value of $2^d t(x)$, which we label as "tvalueexpanded" as follows. For our example, we will pick $2^d t(x) = 25$, corresponding to $x = 11$ (see "tarray" above).
 
