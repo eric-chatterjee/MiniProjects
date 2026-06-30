@@ -106,7 +106,7 @@ The $X$-gate series can be practically implemented for a given value of $2^d t(x
 tvalueexpanded = 25
 ```
 
-We define a recursive parameter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^d$ from numhold. If the result is non-negative, that means the $d^\mathrm{th}$ bit corresponding to the $2^d t(x)$ value is already 1, and we continue with the new value of numhold. On the other hand, if the result is negative, that means that the $d^\mathrm{th}$ bit is 0. In this case, we apply the $X$ gate to flip it to 1, along with reverting the numhold value to the original. Using the updated value of numhold, we apply this protocol recursively to the $(d-1)^\mathrm{st}$ bit, $(d-2)^\mathrm{st}$ bit, all the way to the $0^\mathrm{th}$ bit.
+We define a recursive counter "numhold" which we initialize at the value of tvalueexpanded. We start by subtracting $2^{d-1}$ from numhold. If the result is non-negative, that means the ${d-1}^\mathrm{st}$ bit (where we are zero-indexing) corresponding to the $2^d t(x)$ value is already 1, and we continue with the new value of numhold. On the other hand, if the result is negative, that means that the ${d-1}^\mathrm{st}$ bit is 0. In this case, we apply the $X$ gate to flip it to 1, along with reverting the numhold value to the original. Using the updated value of numhold, we apply this protocol recursively to the $(d-2)^\mathrm{nd}$ bit, $(d-3)^\mathrm{rd}$ bit, all the way to the $0^\mathrm{th}$ bit.
 
 ```python
 numhold = tvalueexpanded
@@ -251,6 +251,18 @@ for cycle in range(1,numgrovercycles):
 
 $0.05078125\ket{000000}\ket{1001} + 0.05078125\ket{000010}\ket{1110} + 0.05078125\ket{000100}\ket{0111} + 0.05078125\ket{001001}\ket{0011} + 0.05078125\ket{001010}\ket{1101} + 0.05078125\ket{010001}\ket{0110} + ... + 0.05078125\ket{100100}\ket{0101} + 0.05078125\ket{101100}\ket{0000} + 0.05078125\ket{110010}\ket{1000} + 0.05078125\ket{110111}\ket{1100} - 0.98046875\ket{111111}\ket{1011}$
 
-We finish by measuring the rightmost $n$ bits (in our example, 4 bits). There is a 96% probability that we will get the correct answer $\ket{1011}$, i.e., $x = 11$.
+The rightmost $n$ bits (in our example, 4 bits) represent the $x$ value. There is a 96% probability that we will get the correct answer |1011>, i.e., $x = 11$. 
+
+We finish by reverting all ancillary bits to 0s. Since the ancillary bits in the correct answer are currently all 1s (due to the fact that we originally used X gates to convert the "correct" $d$-bit state to all 1s in order to set up an $MCZ$-based oracle), we simply apply an $X$ gate to each of the $d$ bits (in our case, the leftmost 6 bits).
+
+```python
+qc.x(range(n,n+d))
+```
+
+<img width="59" height="668" alt="FinalXGatesCircuit" src="https://github.com/user-attachments/assets/1c6a9949-1c9b-4187-b0fb-85d39a51b45d" />
+
+$-0.98046875\ket{000000}\ket{1011} + ...$
+
+As desired, the ancillary bits in the dominant state are now all 0s and the non-ancillary bits represent the correct $x$.
 
 More generally, we note that since each Grover cycle rotates the composite state by a $2\phi$ step, the optimal number of cycles will yield a state with a maximum separation of $\phi$ from the ideal angle $\pi/2$. Since $\phi = \textrm{sin}^{-1}(1/\sqrt{2^n})$, this means that in the final superposition, the overall amplitude of the "wrong" states is no more than $1/\sqrt{2^n}$, resulting in a measurement error probability of no more than $1/2^n$ (i.e., the measurement error is $O(1/2^n)$, as expected).
